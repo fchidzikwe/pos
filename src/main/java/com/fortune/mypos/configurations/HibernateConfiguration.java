@@ -38,14 +38,14 @@ public class HibernateConfiguration {
         
         LocalSessionFactoryBean lsfb = new LocalSessionFactoryBean();
         lsfb.setDataSource(dataSource());
-        lsfb.setPackagesToScan(new String[]{"com.fortune.model"});
+        lsfb.setPackagesToScan(new String[]{"com.fortune.mypos.model"});
         lsfb.setHibernateProperties(hibernateProperties());
         return lsfb;
         
     }
     
     @Bean
-    private DataSource dataSource() {
+    public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
         dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
@@ -56,7 +56,7 @@ public class HibernateConfiguration {
     }
     
     @Bean
-    private Properties hibernateProperties() {
+    public Properties hibernateProperties() {
         Properties properties = new Properties();
         
         properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
