@@ -6,26 +6,25 @@
 package com.fortune.mypos.service;
 
 import com.fortune.mypos.model.Product;
+import com.fortune.mypos.model.User;
 import java.util.List;
 
 /**
  *
  * @author Administrator
  */
-public interface ProductService {
+public interface UserService {
+       User findById(int id);
+     
+    void saveUser(User user);
+     
+    void updateUser(User user);
+     
+    void deleteUserById(int userId);
  
-     Product findById(int id);
+    List<User> findAllUsers(); 
      
-    void saveProduct(Product product);
-     
-    void updateProduct(Product product);
-     
-    void deleteProductByCode(String code);
+    User findUserById(int userId);
  
-    List<Product> findAllProducts(); 
-     
-    Product findProductByCode(String code);
- 
-    boolean isProductCodeUnique(Integer id, String code);
-    
+    boolean isUserIdUnique(Integer id, String username);
 }

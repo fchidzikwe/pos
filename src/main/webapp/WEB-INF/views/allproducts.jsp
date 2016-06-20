@@ -32,7 +32,7 @@
             <tr>
             <td>${product.productName}</td>
             <td>${product.productCategory}</td>
-            <td>${employee.productPrice}</td>
+            <td>${product.productPrice}</td>
             <td><a href="<c:url value='/edit-${product.productCode}-product' />">${product.productCode}</a></td>
             <td><a href="<c:url value='/delete-${product.productCode}-product' />">delete</a></td>
             </tr>

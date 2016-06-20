@@ -13,7 +13,7 @@
  
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Product Registration Form</title>
+    <title>Add New Product Form</title>
  
 <style>
  
@@ -26,7 +26,7 @@
  
 <body>
  
-    <h2>Registration Form</h2>
+    <h2>Add product </h2>
   
     <form:form method="POST" modelAttribute="product">
         <form:input type="hidden" path="productId" id="productId"/>

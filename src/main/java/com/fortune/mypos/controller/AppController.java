@@ -6,11 +6,11 @@
 package com.fortune.mypos.controller;
 
 import com.fortune.mypos.model.Product;
+import com.fortune.mypos.model.User;
 import com.fortune.mypos.service.ProductService;
 import java.util.List;
 import java.util.Locale;
 import javax.validation.Valid;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -27,49 +27,58 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Administrator
  */
 @Controller
-@RequestMapping("/")
 public class AppController {
- 
+
     @Autowired
-   ProductService service;
-     
+    ProductService service;
+
     @Autowired
     MessageSource messageSource;
- 
+
+    //home page where users login
+ @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
+    public String Homepage(ModelMap model) {
+        User user = new User();
+
+        model.addAttribute("user", user);
+        model.addAttribute("edit", false);
+        return "login";
+    }
+
     /*
      * This method will list all existing employees.
      */
-    @RequestMapping(value = { "/", "/list" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/list"}, method = RequestMethod.GET)
     public String listProducts(ModelMap model) {
- 
+
         List<Product> products = service.findAllProducts();
         model.addAttribute("products", products);
         return "allproducts";
     }
- 
+
     /*
      * This method will provide the medium to add a new employee.
      */
-    @RequestMapping(value = { "/new" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/new"}, method = RequestMethod.GET)
     public String newProduct(ModelMap model) {
         Product product = new Product();
         model.addAttribute("product", product);
         model.addAttribute("edit", false);
-        return "registration";
+        return "addproduct";
     }
- 
+
     /*
      * This method will be called on form submission, handling POST request for
      * saving employee in database. It also validates the user input
      */
-    @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/new"}, method = RequestMethod.POST)
     public String saveProduct(@Valid Product product, BindingResult result,
             ModelMap model) {
- 
+
         if (result.hasErrors()) {
-           return "registration";
+            return "addproduct";
         }
- 
+
         /*
          * Preferred way to achieve uniqueness of field [ssn] should be implementing custom @Unique annotation 
          * and applying it on field [ssn] of Model class [Employee].
@@ -78,62 +87,60 @@ public class AppController {
          * framework as well while still using internationalized messages.
          * 
          */
-        if(!service.isProductCodeUnique(product.getProductId(), product.getProductCode())){
-            FieldError codeError =new FieldError("product","productCode",messageSource.getMessage("non.unique.productCode", new String[]{product.getProductCode()}, Locale.getDefault()));
+        if (!service.isProductCodeUnique(product.getProductId(), product.getProductCode())) {
+            FieldError codeError = new FieldError("product", "productCode", messageSource.getMessage("non.unique.productCode", new String[]{product.getProductCode()}, Locale.getDefault()));
             result.addError(codeError);
-            return "registration";
+            return "addproduct";
         }
-         
+
         service.saveProduct(product);
- 
+
         model.addAttribute("success", "Product " + product.getProductName() + " saved successfully");
         return "success";
     }
- 
- 
+
     /*
      * This method will provide the medium to update an existing employee.
      */
-    @RequestMapping(value = { "/edit-{productCode}-product" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/edit-{productCode}-product"}, method = RequestMethod.GET)
     public String editProduct(@PathVariable String productCode, ModelMap model) {
         Product product = service.findProductByCode(productCode);
         model.addAttribute("product", product);
         model.addAttribute("edit", true);
-        return "registration";
+        return "addproduct";
     }
-     
+
     /*
      * This method will be called on form submission, handling POST request for
      * updating employee in database. It also validates the user input
      */
-    @RequestMapping(value = { "/edit-{productCode}-product" }, method = RequestMethod.POST)
+    @RequestMapping(value = {"/edit-{productCode}-product"}, method = RequestMethod.POST)
     public String updateProduct(@Valid Product product, BindingResult result,
             ModelMap model, @PathVariable String productCode) {
- 
+
         if (result.hasErrors()) {
-            return "registration";
+            return "addproduct";
         }
- 
-        if(!service.isProductCodeUnique(product.getProductId(), product.getProductCode())){
-            FieldError codeError =new FieldError("product","productCode",messageSource.getMessage("non.unique.productCode", new String[]{product.getProductCode()}, Locale.getDefault()));
+
+        if (!service.isProductCodeUnique(product.getProductId(), product.getProductCode())) {
+            FieldError codeError = new FieldError("product", "productCode", messageSource.getMessage("non.unique.productCode", new String[]{product.getProductCode()}, Locale.getDefault()));
             result.addError(codeError);
-            return "registration";
+            return "addproduct";
         }
- 
+
         service.updateProduct(product);
- 
-        model.addAttribute("success", "Product " + product.getProductName()  + " updated successfully");
+
+        model.addAttribute("success", "Product " + product.getProductName() + " updated successfully");
         return "success";
     }
- 
-     
+
     /*
      * This method will delete an employee by it's SSN value.
      */
-    @RequestMapping(value = { "/delete-{productCode}-product" }, method = RequestMethod.GET)
+    @RequestMapping(value = {"/delete-{productCode}-product"}, method = RequestMethod.GET)
     public String deleteProduct(@PathVariable String productCode) {
         service.deleteProductByCode(productCode);
         return "redirect:/list";
     }
- 
+
 }
